@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.3.1.js"></script>
+    <style type="text/css">
+        #box {
+            width: 600px;
+            height: 600px;
+            border: black 1px solid;
+        }
+
+        .cell {
+            width: 10px;
+            height: 10px;
+            border: black 1px solid;
+            float: left;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<input type="button" value="测试" onclick="onceGame()">
+<div id="box">
+
+</div>
+<script>
+    //初始化区域  15*15的DIV
+    var box = $("#box");
+    //生成15行
+    for (var i = 0; i < 60; i++) {
+        box.append("<div></div>");
+    }
+    var rows = $("#box div");
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows.eq(i);
+        for (var j = 0; j < 60; j++) {
+            row.append("<div class='cell'></div>");
+        }
+    }
+    $("#box>div>div").on("click", chagelife);
+    var allCells = new Array(); // 二维数组，用来存放我们所有的细胞
+
+    var allRows = $("#box > div");
+    for (var i = 0; i < 15; i++) {
+        allCells[i] = new Array();
+        var rows = allRows.eq(i);
+        var divs = $("div", rows);
+        for (var j = 0; j < divs.length; j++) {
+            allCells[i][j] = divs.eq(j);
+        }
+    }
+
+    function chagelife() {
+        var state = $(this).data("lifestate");
+        if (state == undefined) {
+            $(this).css("background", "red");
+            $(this).data("lifestate", true);
+        } else {
+            if (state) {
+                $(this).css("background", "white");
+                $(this).data("lifestate", false);
+            } else {
+                $(this).css("background", "red");
+                $(this).data("lifestate", true);
+            }
+        }
+
+    }
+
+    // 判断当前位置的细胞的存活状态
+    function judgeCells(x, y) {
+        //
+        var roundLife = getRoundLife(x, y);
+        // 表示当前位置的细胞
+        var cell = allCells[y][x];
+        if (roundLife == 3) { // 等于3的时候，存活
+            cell.data("record", true);
+        } else if (roundLife == 2) { // 等于2的时候，保持不变
+            var data = cell.data("lifeState");
+            cell.data("record", data);
+        } else { // 其他情况 细胞为死
+            cell.data("record", false);
+        }
+    }
+
+    // 获取周围细胞存活的数量
+    // x表示列，y表示行
+    function getRoundLife(x, y) {
+        var c1 = getCellState(x - 1, y - 1);
+        var c2 = getCellState(x, y - 1);
+        var c3 = getCellState(x + 1, y - 1);
+        var c4 = getCellState(x - 1, y);
+        var c6 = getCellState(x + 1, y);
+        var c7 = getCellState(x - 1, y + 1);
+        var c8 = getCellState(x, y + 1);
+        var c9 = getCellState(x + 1, y + 1);
+        // 得到周围细胞的一个存活数量
+        var cnt = c1 + c2 + c3 + c4 + c6 + c7 + c8 + c9;
+        return cnt;
+    }
+
+    // 获取细胞存活的状态 返回1表示活着，返回0表示死的
+    function getCellState(x, y) {
+        if (x < 0 || x >= 60) {
+            return 0;
+        }
+        if (y < 0 || y >= 60) {
+            return 0;
+        }
+        var cell = allCells[y][x];
+        var state = cell.data("lifeState");
+        if (state == undefined) {
+            return 0;
+        } else {
+            return state ? 1 : 0;
+        }
+    }
+
+
+    function onceGame() {
+        // 先判断所有细胞的一个状态
+        for (var y = 0; y < 60; y++) {
+            for (var x = 0; x < 60; x++) {
+                judgeCells(x, y);
+            }
+        }
+        // record 记录着细胞的生死状态
+        for (var y = 0; y < 60; y++) {
+            for (var x = 0; x < 60; x++) {
+                var v = allCells[y][x]
+                var data = v.data("record");
+                if (data == undefined) {
+                    v.css("background", "white");
+                    v.data("lifeState", false);
+                } else {
+                    if (data) {
+                        v.css("background", "black");
+                        v.data("lifeState", true);
+                    } else {
+                        v.css("background", "white");
+                        v.data("lifeState", false);
+                    }
+                }
+            }
+        }
+    }
+
+</script>
+
+
+</body>
+</html>

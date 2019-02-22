@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script  src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<p> holle  it,s  me</p>
+<strong>jQuery 代码:</strong>
+<!-- <img src="" alt="jQuery">
+<img src="" alt="Demo" />-->
+<!--<ul>
+    <li><img src="" alt="jQuery" /></li>
+    <li><img src="" alt="jQuery" /></li>
+    <li><img src="" alt="jQuery" /></li>
+</ul>-->
+<img src="imgs/timg.jpg" alt="Demo" />
+<img src="imgs/timg (1).jpg" alt="jQuery" />
+
+ <script  type="text/javascript">
+     $("p").toggleClass("selected");
+     var count = 0;
+     $("p").click(function(){
+         $(this).toggleClass("highlight", count++ % 3 == 0);
+     });
+
+   /*  $(function(){
+         $("img").attr({alt:"jQueryDemo",title:"强大的jQuery"});
+     });
+*/
+  /* $(function(){
+       $("img").attr("src",function(index){
+           this.src="img"+(index+1)+".png";
+
+       });
+   });*/
+   $(function(){
+       $("img").removeAttr("alt");
+   });
+
+ var $para = $("p");
+ $para.prop("luggageCode", 1234);
+ $para.append("The secret luggage code is: ", String($para.prop("luggageCode")), ". ");
+ $para.removeProp("luggageCode");
+ $para.append("Now the secret luggage code is: ", String($para.prop("luggageCode")), ". ");
+ </script>
+</body>
+</html>

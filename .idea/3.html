@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS</title>
+    <script src="js/jquery-3.3.1.js"></script>
+    <style>
+
+        #box {
+            width: 600px;
+            height: 600px;
+        }
+
+        #box div div {
+            float: left;
+            width: 200px;
+            height: 200px;
+        }
+
+        img {
+            /* 让边框显示在元素所占区域的内部 */
+            -moz-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+    </style>
+</head>
+<body>
+
+<DIV id="box">
+
+    <DIV>
+        <DIV><img src="imgs/ori_1.jpg" width="200" height="200"/></DIV>
+        <DIV><img src="imgs/ori_2.jpg" width="200" height="200"/></DIV>
+        <DIV><img src="imgs/ori_3.jpg" width="200" height="200"/></DIV>
+    </DIV>
+    <DIV>
+        <DIV><img src="imgs/ori_4.jpg" width="200" height="200"/></DIV>
+        <DIV><img src="imgs/ori_5.jpg" width="200" height="200"/></DIV>
+        <DIV><img src="imgs/ori_6.jpg" width="200" height="200"/></DIV>
+    </DIV>
+    <DIV>
+        <DIV><img src="imgs/ori_7.jpg" width="200" height="200"/></DIV>
+        <DIV><img src="imgs/ori_8.jpg" width="200" height="200"/></DIV>
+        <DIV><img src="imgs/ori_10.png" width="200" height="200"/></DIV>
+    </DIV>
+</DIV>
+
+<input type="button" value="Start" onclick="startGame()">
+<input type="button" value="Effect" onclick="test()">
+
+<script>
+
+    var imgArr = [
+        "imgs/ori_1.jpg",
+        "imgs/ori_2.jpg",
+        "imgs/ori_3.jpg",
+        "imgs/ori_4.jpg",
+        "imgs/ori_5.jpg",
+        "imgs/ori_6.jpg",
+        "imgs/ori_7.jpg",
+        "imgs/ori_8.jpg",
+        "imgs/ori_10.png"
+    ];
+
+    var judgeArr = [
+        "imgs/ori_1.jpg",
+        "imgs/ori_2.jpg",
+        "imgs/ori_3.jpg",
+        "imgs/ori_4.jpg",
+        "imgs/ori_5.jpg",
+        "imgs/ori_6.jpg",
+        "imgs/ori_7.jpg",
+        "imgs/ori_8.jpg",
+        "imgs/ori_10.png"
+    ];
+
+
+    // 打乱数组的方法
+    function shuffle(array) {
+        // 9  --  0 ~ 8
+        // 8  --  0 ~ 7
+        for (var i = array.length; i >= 1; i--) {
+            // 随机数的取值范围 (0.~  - 0.9~)
+            // 随机索引的取值
+            var index = Math.floor((Math.random() * i)); // 随机的位置
+            var last = i - 1; // 最后一个位置
+            if (last != index) {
+                var tem = array[index];
+                array[index] = array[last];
+                array[last] = tem;
+            }
+        }
+        return array;
+    }
+
+    function startGame() {
+        var arr = shuffle(imgArr);
+        var imgs = $("img");
+        for (var i = 0; i < imgs.length; i++) {
+            imgs.eq(i).attr("src", arr[i]);
+        }
+        resetClick();
+    }
+
+    function resetClick() {
+        var imgs =  $("img");
+        // 关闭图片的点击事件
+        imgs.off("click");
+        // 白色图片的一个索引
+        var index = findWhiteRect(imgs);
+        // set集合装的是可以移动图片的索引
+        var sets = fetchMoveImg(index);
+        for (var i of sets) {
+            console.log(i);
+            imgs.eq(i).on("click", chooseImg);
+        }
+    }
+
+
+    var markPrev = null; // 用来记录上一次点击的图片
+
+    function chooseImg() {
+        // alert("11");
+        if (markPrev == null) {
+            this.style.border = "5px yellow solid";
+            markPrev = this;
+        } else {
+            if (markPrev == this) { // 表示两次点击的是同一张
+                this.style.border = "";
+                markPrev = null;
+                return;
+            }
+            var path1 = $(markPrev).attr("src");
+            var path2 = $(this).attr("src");
+            // alert(path1 + "\n" + path2);
+            if (path1.indexOf("imgs/ori_10.png") < 0 &&
+                path2.indexOf("imgs/ori_10.png") < 0) {
+                return;
+            }
+            $(markPrev).attr("src", path2);
+            $(this).attr("src", path1);
+            markPrev.style.border = "";
+            markPrev = null;
+            setTimeout("judgeResult()", 50);
+        }
+    }
+
+    function judgeResult() {
+        resetClick();
+        var result = true;
+        var $img = $("img");
+        for (var i = 0; i < judgeArr.length; i++) {
+            var path1 = $img.eq(i).attr("src");
+            var path2 = judgeArr[i];
+            if (path1.indexOf(path2) < 0) {
+                result = false;
+                break;
+            }
+        }
+        if (result) {
+            $img.off("click");
+            runEffect();
+        }
+    }
+
+    function runEffect() {
+        $("img").animate({
+            width: "0px",
+            height: "0px",
+            'margin-left': "100px",
+            'margin-top': "100px"
+        }, "slow").animate({
+            width: "200px",
+            height: "200px",
+            'margin-left': "0px",
+            'margin-top': "0px"
+        }, "slow");
+    }
+
+    function findWhiteRect(imgs) {
+        var resutl = -1;
+        for (var i = 0; i < imgs.length; i++) {
+            if (imgs.eq(i).attr("src").indexOf("imgs/ori_10.png") >= 0) {
+                resutl = i;
+            }
+        }
+        return resutl;
+    }
+
+
+    function test() {
+        fetchMoveImg(0);
+        console.log("-----------")
+        fetchMoveImg(1);
+        console.log("-----------")
+        fetchMoveImg(2);
+        console.log("-----------")
+        fetchMoveImg(3);
+        console.log("-----------")
+        fetchMoveImg(4);
+        console.log("-----------")
+        fetchMoveImg(5);
+        console.log("-----------")
+        fetchMoveImg(6);
+        console.log("-----------")
+        fetchMoveImg(7);
+        console.log("-----------")
+        fetchMoveImg(8);
+    }
+
+    function fetchMoveImg(index) {
+        var moveImg = new Set();
+        if (index - 3 >= 0) {   // 考虑上面
+            moveImg.add(index - 3);
+        }
+        if (index + 3 < 9) {    // 考虑下面
+            moveImg.add(index + 3);
+        }
+        if (index % 3 == 0) { // 不用考虑左边
+            // console.log(index + 1);
+            moveImg.add(index + 1);
+        } else if ((index + 1) % 3 == 0) { // 不用考虑右边
+            moveImg.add(index - 1);
+        } else {
+            moveImg.add(index + 1);
+            moveImg.add(index - 1);
+        }
+        moveImg.add(index); // 添加白色区域
+        return moveImg;
+    }
+
+
+</script>
+</body>
+</html>

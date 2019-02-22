@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<table id="tab1" border="1" width="80%" align="center">
+    <thead>
+    <tr>
+        <th>分类的ID</th>
+        <th>分类的名称</th>
+        <th>分类的描述</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1</td>
+        <td>手机数码</td>
+        <td>手机数码</td>
+        <td><a href="">修改</a>|<a href="">删除</a></td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>电脑办公</td>
+        <td>电脑办公</td>
+        <td><a href="">修改</a>|<a href="">删除</a></td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>烟酒糖茶</td>
+        <td>烟酒糖茶</td>
+        <td><a href="">修改</a>|<a href="">删除</a></td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>鞋靴箱包</td>
+        <td>鞋靴箱包</td>
+        <td><a href="">修改</a>|<a href="">删除</a></td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>汽车用品</td>
+        <td>汽车用品</td>
+        <td><a href="">修改</a>|<a href="">删除</a></td>
+    </tr>
+    </tbody>
+</table>
+<script  type="text/javascript">
+    $(function() {
+        $("tr:odd").css("background","#c02248");
+        $("tr:even").css("background","#ff0");
+    });
+
+</script>
+
+</body>
+</html>
